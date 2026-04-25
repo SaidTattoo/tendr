@@ -153,6 +153,14 @@ public final class CloudSyncManager {
         }
     }
 
+    // MARK: - Push notifications
+
+    public func handleRemoteNotification() async {
+        guard isAvailable else { return }
+        do { try await privateEngine?.fetchChanges() } catch { cloudLog("push private fetch error: \(error)") }
+        do { try await sharedEngine?.fetchChanges() } catch { cloudLog("push shared fetch error: \(error)") }
+    }
+
     // MARK: - Sharing (recipient)
 
     public func acceptShare(metadata: CKShare.Metadata) async {

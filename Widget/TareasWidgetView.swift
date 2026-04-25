@@ -214,7 +214,7 @@ private struct Row: View {
             }
             Spacer(minLength: 0)
 
-            Button(intent: CompleteTaskIntent(taskID: item.id.uuidString)) {
+            Button(intent: CompleteTaskIntent(task: TareaEntity(item))) {
                 Image(systemName: "checkmark")
                     .font(.caption.weight(.bold))
                     .foregroundStyle(.white)

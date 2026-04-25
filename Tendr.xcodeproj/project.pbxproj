@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02A482A32CA5FE0D61E94481 /* TareaEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28044B50218FCD35D628B2F /* TareaEntity.swift */; };
 		04914C717FD5F8694DA6F225 /* CategoryIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EBA0C1DBA7487F23CF6B2D /* CategoryIntent.swift */; };
+		06993F7AC85EB6FB379A05A0 /* TareaEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28044B50218FCD35D628B2F /* TareaEntity.swift */; };
 		1FFDB538A2F5E713F7D615E1 /* CloudSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7544D92DA94E166A6E784CB /* CloudSync.swift */; };
 		2CC808C81A9D6455E8FA175F /* TareaEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8A099C5DFC6E3A358F1D8B4 /* TareaEditView.swift */; };
 		37B50D15BA7D887CB3449D2C /* CategoriesEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F217CEED482B0C0830FEE06E /* CategoriesEditView.swift */; };
@@ -74,6 +76,7 @@
 		A212D3DD86BEFD997254B9E5 /* TendrWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = TendrWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A78F82A1F7D5D6445BAA582B /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
 		B0A2783AE90F11B15CA34991 /* CKRecord+TareaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CKRecord+TareaItem.swift"; sourceTree = "<group>"; };
+		B28044B50218FCD35D628B2F /* TareaEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TareaEntity.swift; sourceTree = "<group>"; };
 		B7544D92DA94E166A6E784CB /* CloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSync.swift; sourceTree = "<group>"; };
 		B84C69F3C1C63D1B0545DF55 /* TareasWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TareasWidgetView.swift; sourceTree = "<group>"; };
 		B8A099C5DFC6E3A358F1D8B4 /* TareaEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TareaEditView.swift; sourceTree = "<group>"; };
@@ -129,6 +132,7 @@
 				B7544D92DA94E166A6E784CB /* CloudSync.swift */,
 				C5A604461E5CF93EE6531475 /* CompleteTaskIntent.swift */,
 				553268589AAC613642F43D66 /* NotificationManager.swift */,
+				B28044B50218FCD35D628B2F /* TareaEntity.swift */,
 				A78F82A1F7D5D6445BAA582B /* TaskModel.swift */,
 			);
 			path = Shared;
@@ -261,6 +265,7 @@
 				D3F8AF76F7702EBCAB9F783B /* CloudSync.swift in Sources */,
 				E856D6C0A61F24AFBE623253 /* CompleteTaskIntent.swift in Sources */,
 				7D3762CE6A4AC28EB3CC0E08 /* NotificationManager.swift in Sources */,
+				02A482A32CA5FE0D61E94481 /* TareaEntity.swift in Sources */,
 				B8FEC7C1235B07EABF28DEAC /* TareasWidget.swift in Sources */,
 				822C8E204A79DFE00EF75CBF /* TareasWidgetBundle.swift in Sources */,
 				F0881C4C51EE8EA12E933F16 /* TareasWidgetView.swift in Sources */,
@@ -283,6 +288,7 @@
 				9BFA4CA5DB956FA72142AFF8 /* FinishedTasksView.swift in Sources */,
 				4D9499454D6EB8CF13BD04D7 /* NotificationManager.swift in Sources */,
 				2CC808C81A9D6455E8FA175F /* TareaEditView.swift in Sources */,
+				06993F7AC85EB6FB379A05A0 /* TareaEntity.swift in Sources */,
 				D606BEC4ED183F94709E4C65 /* TareasApp.swift in Sources */,
 				5ED57D4BF35C94B8E7889675 /* TaskModel.swift in Sources */,
 			);
@@ -307,6 +313,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_KEY_CFBundleDisplayName = Tendr;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -476,6 +483,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_KEY_CFBundleDisplayName = Tendr;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (

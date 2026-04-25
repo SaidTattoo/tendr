@@ -70,6 +70,7 @@ public struct TareaItem: Identifiable, Codable, Hashable {
     public var category: String
     public var previousCompletedAt: Date?
     public var endsAt: Date?
+    public var completionHistory: [Date]
 
     public init(
         id: UUID = UUID(),
@@ -79,7 +80,8 @@ public struct TareaItem: Identifiable, Codable, Hashable {
         lastCompletedAt: Date = Date(),
         category: String = defaultCategory,
         previousCompletedAt: Date? = nil,
-        endsAt: Date? = nil
+        endsAt: Date? = nil,
+        completionHistory: [Date] = []
     ) {
         self.id = id
         self.name = name
@@ -89,10 +91,12 @@ public struct TareaItem: Identifiable, Codable, Hashable {
         self.category = category
         self.previousCompletedAt = previousCompletedAt
         self.endsAt = endsAt
+        self.completionHistory = completionHistory
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, icon, frequency, lastCompletedAt, category, previousCompletedAt, endsAt
+        case id, name, icon, frequency, lastCompletedAt, category,
+             previousCompletedAt, endsAt, completionHistory
     }
 
     private enum LegacyKeys: String, CodingKey {
@@ -115,7 +119,46 @@ public struct TareaItem: Identifiable, Codable, Hashable {
         category = try c.decodeIfPresent(String.self, forKey: .category) ?? defaultCategory
         previousCompletedAt = try c.decodeIfPresent(Date.self, forKey: .previousCompletedAt)
         endsAt = try c.decodeIfPresent(Date.self, forKey: .endsAt)
+        completionHistory = try c.decodeIfPresent([Date].self, forKey: .completionHistory) ?? []
     }
+
+    public func currentStreak() -> Int {
+        let history = completionHistory.sorted()
+        guard !history.isEmpty else { return 0 }
+        var streak = 1
+        var idx = history.count - 1
+        while idx > 0 {
+            let later = history[idx]
+            let earlier = history[idx - 1]
+            let dueAfterEarlier = frequency.nextDueDate(after: earlier)
+            if later <= dueAfterEarlier {
+                streak += 1
+                idx -= 1
+            } else {
+                break
+            }
+        }
+        return streak
+    }
+
+    public func bestStreak() -> Int {
+        let history = completionHistory.sorted()
+        guard history.count > 1 else { return history.count }
+        var best = 1
+        var current = 1
+        for i in 1..<history.count {
+            let due = frequency.nextDueDate(after: history[i - 1])
+            if history[i] <= due {
+                current += 1
+                best = max(best, current)
+            } else {
+                current = 1
+            }
+        }
+        return best
+    }
+
+    public func totalCompletions() -> Int { completionHistory.count }
 
     public func isFinished(at date: Date = Date()) -> Bool {
         guard let endsAt else { return false }
@@ -288,6 +331,10 @@ public enum TareasStore {
             items[idx].previousCompletedAt = items[idx].lastCompletedAt
         }
         items[idx].lastCompletedAt = date
+        items[idx].completionHistory.append(date)
+        if items[idx].completionHistory.count > 365 {
+            items[idx].completionHistory.removeFirst(items[idx].completionHistory.count - 365)
+        }
         save(items)
         let snapshot = items[idx]
         Task { @MainActor in CloudSyncManager.shared.taskUpserted(snapshot) }
@@ -297,6 +344,10 @@ public enum TareasStore {
         var items = load()
         guard let idx = items.firstIndex(where: { $0.id == id }),
               let prev = items[idx].previousCompletedAt else { return }
+        if let last = items[idx].completionHistory.last,
+           abs(last.timeIntervalSince(items[idx].lastCompletedAt)) < 1 {
+            items[idx].completionHistory.removeLast()
+        }
         items[idx].lastCompletedAt = prev
         items[idx].previousCompletedAt = nil
         save(items)
@@ -321,6 +372,26 @@ public enum TareasStore {
         load()
             .filter { $0.isFinished(at: date) }
             .sorted { ($0.endsAt ?? .distantPast) > ($1.endsAt ?? .distantPast) }
+    }
+
+    public static func snooze(id: UUID, by interval: TimeInterval) {
+        var items = load()
+        guard let idx = items.firstIndex(where: { $0.id == id }) else { return }
+        items[idx].previousCompletedAt = items[idx].lastCompletedAt
+        items[idx].lastCompletedAt = items[idx].lastCompletedAt.addingTimeInterval(interval)
+        save(items)
+        let snapshot = items[idx]
+        Task { @MainActor in CloudSyncManager.shared.taskUpserted(snapshot) }
+    }
+
+    public static func skipCycle(id: UUID, at date: Date = Date()) {
+        var items = load()
+        guard let idx = items.firstIndex(where: { $0.id == id }) else { return }
+        items[idx].previousCompletedAt = items[idx].lastCompletedAt
+        items[idx].lastCompletedAt = date
+        save(items)
+        let snapshot = items[idx]
+        Task { @MainActor in CloudSyncManager.shared.taskUpserted(snapshot) }
     }
 
     public static func resumeTask(id: UUID) {

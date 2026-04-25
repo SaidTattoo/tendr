@@ -45,6 +45,29 @@ struct ContentView: View {
                                                 Label("Borrar", systemImage: "trash")
                                             }
                                         }
+                                        .contextMenu {
+                                            Button {
+                                                complete(item)
+                                            } label: {
+                                                Label("Marcar hecho", systemImage: "checkmark.circle")
+                                            }
+                                            Menu("Posponer") {
+                                                Button("1 hora") { snooze(item, hours: 1) }
+                                                Button("3 horas") { snooze(item, hours: 3) }
+                                                Button("1 día") { snooze(item, hours: 24) }
+                                            }
+                                            Button {
+                                                skip(item)
+                                            } label: {
+                                                Label("Saltar este ciclo", systemImage: "forward")
+                                            }
+                                            Divider()
+                                            Button(role: .destructive) {
+                                                remove(item)
+                                            } label: {
+                                                Label("Borrar", systemImage: "trash")
+                                            }
+                                        }
                                 }
                             } header: {
                                 CategoryHeader(style: TareasStore.style(for: cat))
@@ -184,6 +207,16 @@ struct ContentView: View {
 
     private func complete(_ item: TareaItem) {
         TareasStore.markCompleted(id: item.id)
+        refresh()
+    }
+
+    private func snooze(_ item: TareaItem, hours: Int) {
+        TareasStore.snooze(id: item.id, by: TimeInterval(hours) * 3_600)
+        refresh()
+    }
+
+    private func skip(_ item: TareaItem) {
+        TareasStore.skipCycle(id: item.id)
         refresh()
     }
 

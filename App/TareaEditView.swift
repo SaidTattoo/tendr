@@ -182,6 +182,40 @@ struct TareaEditView: View {
                             Label("Marcar como hecho ahora", systemImage: "checkmark.circle.fill")
                         }
                     }
+
+                    if case .edit(let item) = mode, !item.completionHistory.isEmpty {
+                        Section("Historial") {
+                            HStack {
+                                Label("Total", systemImage: "checkmark.seal")
+                                Spacer()
+                                Text("\(item.totalCompletions())")
+                                    .foregroundStyle(.secondary)
+                                    .monospacedDigit()
+                            }
+                            HStack {
+                                Label("Racha actual", systemImage: "flame")
+                                Spacer()
+                                Text("\(item.currentStreak())")
+                                    .foregroundStyle(.secondary)
+                                    .monospacedDigit()
+                            }
+                            HStack {
+                                Label("Mejor racha", systemImage: "trophy")
+                                Spacer()
+                                Text("\(item.bestStreak())")
+                                    .foregroundStyle(.secondary)
+                                    .monospacedDigit()
+                            }
+                            if let last = item.completionHistory.last {
+                                HStack {
+                                    Label("Última vez", systemImage: "clock.arrow.circlepath")
+                                    Spacer()
+                                    Text(last, style: .relative)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
                 }
             }
             .navigationTitle(existingID == nil ? "Nueva tarea" : "Editar tarea")
